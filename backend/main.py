@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pathlib import Path
 from config import settings
 from datetime import datetime, timedelta, timezone
@@ -11,7 +11,10 @@ from sqlalchemy import func
 from db import create_tables, SessionLocal
 from models import station_info
 from haversine import haversine, Unit
-import redis
+from starlette.applications import Starlette
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 DATA_DIR = Path("data")
 WMATA_DIR = DATA_DIR / "wmata"
@@ -90,11 +93,13 @@ async def lifespan(app: FastAPI):
     except asyncio.CancelledError:
         print("Updater task shut down cleanly")
 
-
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(lifespan=lifespan)
+app.state.limiter = limiter
 
 @app.get("/random_stop")
-def get_random_stop(user_lat: float, user_long: float, min_range: float=0.5, max_range: float=2):
+@limiter.limit("15/minute")
+def get_random_stop(request: Request, user_lat: float, user_long: float, min_range: float=0.5, max_range: float=2):
     user_location = (user_lat, user_long)
     has_found_valid_loc = False
     attempts=0

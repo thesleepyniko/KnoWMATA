@@ -9,6 +9,9 @@
       "Courier New", monospace;
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-orange-400: oklch(75% 0.183 55.934);
+    --color-yellow-400: oklch(85.2% 0.199 91.936);
+    --color-yellow-500: oklch(79.5% 0.184 86.047);
+    --color-yellow-700: oklch(55.4% 0.135 66.442);
     --color-green-400: oklch(79.2% 0.209 151.711);
     --color-green-500: oklch(72.3% 0.219 149.579);
     --color-green-700: oklch(52.7% 0.154 150.069);
@@ -19,12 +22,17 @@
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
     --text-2xl: 1.5rem;
     --text-2xl--line-height: calc(2 / 1.5);
+    --text-3xl: 1.875rem;
+    --text-3xl--line-height: calc(2.25 / 1.875);
     --text-4xl: 2.25rem;
     --text-4xl--line-height: calc(2.5 / 2.25);
     --text-6xl: 3.75rem;
     --text-6xl--line-height: 1;
+    --font-weight-semibold: 600;
     --font-weight-bold: 700;
     --radius-lg: 0.5rem;
     --default-transition-duration: 150ms;
@@ -200,6 +208,9 @@
   .start-1 {
     inset-inline-start: calc(var(--spacing) * 1);
   }
+  .start-2 {
+    inset-inline-start: calc(var(--spacing) * 2);
+  }
   .container {
     width: 100%;
     @media (width >= 40rem) {
@@ -221,15 +232,6 @@
   .mx-auto {
     margin-inline: auto;
   }
-  .my-6 {
-    margin-block: calc(var(--spacing) * 6);
-  }
-  .mt-4 {
-    margin-top: calc(var(--spacing) * 4);
-  }
-  .mb-4 {
-    margin-bottom: calc(var(--spacing) * 4);
-  }
   .block {
     display: block;
   }
@@ -238,9 +240,6 @@
   }
   .flex {
     display: flex;
-  }
-  .grid {
-    display: grid;
   }
   .hidden {
     display: none;
@@ -251,44 +250,20 @@
   .table {
     display: table;
   }
-  .table-row {
-    display: table-row;
+  .h-\[10vh\] {
+    height: 10vh;
   }
-  .h-\[30\%\] {
-    height: 30%;
+  .h-\[20vh\] {
+    height: 20vh;
   }
-  .h-\[50vh\] {
-    height: 50vh;
-  }
-  .h-\[70\%\] {
-    height: 70%;
-  }
-  .h-\[70vh\] {
-    height: 70vh;
-  }
-  .h-\[180px\] {
-    height: 180px;
-  }
-  .h-\[360px\] {
-    height: 360px;
-  }
-  .h-full {
-    height: 100%;
-  }
-  .h-screen {
-    height: 100vh;
+  .h-\[30vh\] {
+    height: 30vh;
   }
   .min-h-screen {
     min-height: 100vh;
   }
-  .w-\[100\%\] {
-    width: 100%;
-  }
   .w-full {
     width: 100%;
-  }
-  .max-w-\[97\%\] {
-    max-width: 97%;
   }
   .flex-shrink {
     flex-shrink: 1;
@@ -307,9 +282,6 @@
   }
   .flex-col {
     flex-direction: column;
-  }
-  .place-items-center {
-    place-items: center;
   }
   .items-center {
     align-items: center;
@@ -332,73 +304,46 @@
     border-style: var(--tw-border-style);
     border-width: 1px;
   }
-  .border-\[12px\] {
-    border-style: var(--tw-border-style);
-    border-width: 12px;
+  .border-r-2 {
+    border-right-style: var(--tw-border-style);
+    border-right-width: 2px;
   }
   .border-b-4 {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 4px;
   }
-  .border-black {
-    border-color: var(--color-black);
-  }
-  .border-blue-700 {
-    border-color: var(--color-blue-700);
-  }
   .border-green-700 {
     border-color: var(--color-green-700);
   }
-  .bg-\[\#111111\] {
-    background-color: #111111;
-  }
-  .bg-\[https\:\/\/transitmap\.net\/wmata-silver-line-2022\/\] {
-    background-color: //transitmap.net/wmata-silver-line-2022/;
+  .border-yellow-700 {
+    border-color: var(--color-yellow-700);
   }
   .bg-blue-500 {
     background-color: var(--color-blue-500);
   }
-  .bg-gray-200 {
-    background-color: var(--color-gray-200);
-  }
   .bg-green-500 {
     background-color: var(--color-green-500);
   }
-  .bg-red-500 {
-    background-color: var(--color-red-500);
+  .bg-yellow-500 {
+    background-color: var(--color-yellow-500);
   }
   .bg-\[url\(\'https\:\/\/i0\.wp\.com\/transitmap\.net\/wp-content\/uploads\/2022\/09\/wmata-silver-line-2022\.jpg\'\)\] {
     background-image: url('https://i0.wp.com/transitmap.net/wp-content/uploads/2022/09/wmata-silver-line-2022.jpg');
   }
-  .bg-\[url\(\'https\:\/\/i0\.wp\.com\/transitmap\.net\/wp-content\/uploads\/2022\/09\/wmata-silver-line-2022\.jpg\?ssl\=1\'\)\] {
-    background-image: url('https://i0.wp.com/transitmap.net/wp-content/uploads/2022/09/wmata-silver-line-2022.jpg?ssl=1');
-  }
-  .bg-\[url\(\'https\:\/\/transitmap\.net\/wmata-silver-line-2022\/\'\)\] {
-    background-image: url('https://transitmap.net/wmata-silver-line-2022/');
-  }
-  .bg-\[url\(https\:\/\/transitmap\.net\/wmata-silver-line-2022\/\)\] {
-    background-image: url(https://transitmap.net/wmata-silver-line-2022/);
-  }
   .bg-\[length\:250\%\] {
     background-size: 250%;
   }
-  .bg-cover {
-    background-size: cover;
-  }
-  .bg-\[position\:40\%_30\%\] {
-    background-position: 40% 30%;
-  }
   .bg-center {
     background-position: center;
+  }
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
   }
   .p-4 {
     padding: calc(var(--spacing) * 4);
   }
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
-  }
-  .px-20 {
-    padding-inline: calc(var(--spacing) * 20);
   }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
@@ -412,15 +357,16 @@
   .text-center {
     text-align: center;
   }
-  .align-middle {
-    vertical-align: middle;
-  }
   .font-\[\'Inter\'\] {
     font-family: 'Inter';
   }
   .text-2xl {
     font-size: var(--text-2xl);
     line-height: var(--tw-leading, var(--text-2xl--line-height));
+  }
+  .text-3xl {
+    font-size: var(--text-3xl);
+    line-height: var(--tw-leading, var(--text-3xl--line-height));
   }
   .text-4xl {
     font-size: var(--text-4xl);
@@ -430,9 +376,17 @@
     font-size: var(--text-6xl);
     line-height: var(--tw-leading, var(--text-6xl--line-height));
   }
+  .text-xl {
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
+  }
+  .font-semibold {
+    --tw-font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semibold);
   }
   .text-white {
     color: var(--color-white);
@@ -442,9 +396,6 @@
   }
   .lowercase {
     text-transform: lowercase;
-  }
-  .uppercase {
-    text-transform: uppercase;
   }
   .italic {
     font-style: italic;
@@ -480,13 +431,6 @@
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
-  .hover\:border-blue-500 {
-    &:hover {
-      @media (hover: hover) {
-        border-color: var(--color-blue-500);
-      }
-    }
-  }
   .hover\:border-green-500 {
     &:hover {
       @media (hover: hover) {
@@ -494,10 +438,10 @@
       }
     }
   }
-  .hover\:bg-blue-400 {
+  .hover\:border-yellow-500 {
     &:hover {
       @media (hover: hover) {
-        background-color: var(--color-blue-400);
+        border-color: var(--color-yellow-500);
       }
     }
   }
@@ -508,10 +452,10 @@
       }
     }
   }
-  .hover\:bg-orange-400 {
+  .hover\:bg-yellow-400 {
     &:hover {
       @media (hover: hover) {
-        background-color: var(--color-orange-400);
+        background-color: var(--color-yellow-400);
       }
     }
   }

@@ -9,8 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script type="text/javascript" src="brython.js"></script>
-    <script type="text/javascript" src="brython_stdlib.js"></script>
+    <!-- <script type="text/javascript" src="brython.js"></script>
+    <script type="text/javascript" src="brython_stdlib.js"></script> -->
     <link href="./tailwind.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -22,17 +22,177 @@
 </head>
 
 <body>
-     <div id="map" class="w-full h-[70vh]">
+    <div class="h-[20vh] w-full bg-blue-500 text-center text-4xl text-white font-semibold font-['Inter'] p-2">
+        <h1 id="destination">Destination: Start a round!</h1>
+    </div>
+     <div id="map" class="w-full" style="height:60vh">
      </div>
-     <div class="h-[30%] w-full bg-gray-200">
-        
+     <div class="h-[20vh] w-full bg-blue-500 text-white text-center font-semibold font-['Inter'] text-xl">
+        <h1 id="start-1">Ready to go? <br>Click the button below! <br> Try the Test Location button if you aren't in DC! Press Start first though! may take 2 clicks on test button to work</h1>
+        <button id="start-2" class="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded">
+            Start!
+        </button>
+        <button id="test-1" class="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 border-b-4 border-yellow-700 hover:border-yellow-500 rounded">
+            Test Location
+        </button>
     </div>
 </body>
 
 <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var userMarker;
+    var destinationMarker;
+    var serverUrl = 'http://127.0.0.1:8000';
+    var map = L.map('map').setView([38.9072, -77.0369], 12);
+    var destLat;
+    var destLong;
+    var elapsedTime = 0;
+    var alreadyPulled = false;
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
+
+    const startButton = document.getElementById('start-2');
+    const startInfo = document.getElementById('start-1')
+    const testButton = document.getElementById('test-1')
+    function startRun() {
+        hasFetched = false;
+        map.locate({ setView: true, watch: true, maxZoom: 16 });
+        if(destinationMarker) {
+            map.removeLayer(destinationMarker);
+            
+        }
+        elapsedTime = 0;
+        startInfo.textContent = "go go go!"
+    }
+
+    function formatTime(ms) {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        const hours = Math.floor(minutes / 60);
+        const formattedHours = String(hours).padStart(2, '0');
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(seconds).padStart(2, '0');
+        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    }
+    function testRun() {
+        console.log("started test");
+        // if (!destinationMarker) {
+        //     console.error("Please click Start! first to get a destination.");
+        //     return;
+        // }
+        var latitude = 38.9072;
+        var longitude = -77.0369;
+        fetch(`${serverUrl}/random_stop?user_lat=${latitude}&user_long=${longitude}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('server responded with unknown error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("server returned:", data);
+                    var destinationIndicator = document.getElementById('destination')
+                    destinationIndicator.textContent = `Destination: ${data.name}`
+                    destinationMarker = L.circle([data.stop_lat, data.stop_long], {
+                        color: "blue",
+                        fillColor: "#00F",
+                        fillOpacity: 0.2,
+                        radius: 40
+                    }).addTo(map);
+                    startTime = Date.now();
+                    timerInterval = setInterval(() => {
+                        elapsedTime = Date.now() - startTime;
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error("fetch failed:", error);
+                });   
+        map.stopLocate();
+        const destinationCoords = destinationMarker.getLatLng();
+        if (!userMarker) {
+            userMarker = L.marker(destinationCoords).addTo(map);
+        } else {
+            userMarker.setLatLng(destinationCoords);
+        }
+        if (destinationMarker) {
+            const circleCenter = destinationMarker.getLatLng();
+            const userLocation = userMarker.getLatLng();
+            const distance = userLocation.distanceTo(circleCenter);
+            const radius = destinationMarker.getRadius();
+
+            if (distance <= radius) {
+                startInfo.textContent = `Congrats, you made it! :D it took about ${formatTime(elapsedTime)}`
+                clearInterval(timerInterval);
+                timerInterval = null;
+                map.stopLocate();
+            }
+        }
+        
+    }
+
+    startButton.addEventListener('click', startRun);
+    testButton.addEventListener('click', testRun)
+    map.on("locationfound", function(e) {
+        if (!userMarker) {
+            userMarker = L.marker(e.latlng).addTo(map);
+        } else {
+            userMarker.setLatLng(e.latlng);
+        }
+
+        // the two below hard coded ones are testing only!
+        // var latitude = 38.9072;
+        // var longitude = -77.0369;
+
+        var latLng = userMarker.getLatLng();
+        var latitude = latLng.lat;
+        var longitude = latLng.lng;
+        if (!hasFetched) {
+            fetch(`${serverUrl}/random_stop?user_lat=${latitude}&user_long=${longitude}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('server responded with unknown error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("server returned:", data);
+                    var destinationIndicator = document.getElementById('destination')
+                    destinationIndicator.textContent = `Destination: ${data.name}`
+                    destinationMarker = L.circle([data.stop_lat, data.stop_long], {
+                        color: "blue",
+                        fillColor: "#00F",
+                        fillOpacity: 0.2,
+                        radius: 40
+                    }).addTo(map);
+                    startTime = Date.now();
+                    timerInterval = setInterval(() => {
+                        elapsedTime = Date.now() - startTime;
+                    }, 1000);
+                })
+                .catch(error => {
+                    console.error("fetch failed:", error);
+                });   
+            hasFetched = true
+        }
+        if (destinationMarker) {
+            const circleCenter = destinationMarker.getLatLng();
+            const userLocation = userMarker.getLatLng();
+            const distance = userLocation.distanceTo(circleCenter);
+            const radius = destinationMarker.getRadius();
+
+            if (distance <= radius) {
+                startInfo.textContent = `Congrats, you made it! :D it took about ${formatTime(elapsedTime)}`
+                clearInterval(timerInterval);
+                timerInterval = null;
+                map.stopLocate();
+            }
+        }
+    });
+
+    map.on("locationerror", function(e) {
+        console.log("location not given D:");
+        console.log(e.message);
+    });
 </script>

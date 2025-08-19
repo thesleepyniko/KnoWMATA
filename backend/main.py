@@ -97,10 +97,14 @@ app = FastAPI(lifespan=lifespan)
 def get_random_stop(user_lat: float, user_long: float, min_range: float=0.5, max_range: float=2):
     user_location = (user_lat, user_long)
     has_found_valid_loc = False
+    attempts=0
     with SessionLocal() as db:
         while not has_found_valid_loc:
             result = db.query(station_info).order_by(func.random()).first()
-            miles=haversine(user_location, (result.stop_lat, result.stop_long), unit=Unit.MILES)
+            miles=haversine(user_location, (result.stop_lat, result.stop_long), unit=Unit.MILES) # type: ignore
             if min_range<=miles<=max_range:
                 has_found_valid_loc=True
-    return result
+            if attempts>=1000:
+                return {}
+            attempts+=1
+    return result #type: ignore

@@ -11,6 +11,7 @@ import httpx
 from config import settings
 from db import SessionLocal, create_tables
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from haversine import Unit, haversine
 from models import station_info
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -22,6 +23,13 @@ from starlette.applications import Starlette
 
 DATA_DIR = Path("data")
 WMATA_DIR = DATA_DIR / "wmata"
+origins = [
+    "https://thisiscid.github.io",               # your user site
+    "https://thisiscid.github.io/KnoWMATA",   # repo site
+    "https://thisiscid.github.io/KnowMATA/game.html"
+    "http://localhost:8000"                       # dev testing
+]
+
 
 async def load_gtfs() -> tuple[str, datetime]:
     async with httpx.AsyncClient() as client:
@@ -100,6 +108,14 @@ async def lifespan(app: FastAPI):
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI(lifespan=lifespan)
 app.state.limiter = limiter
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/random_stop")
 @limiter.limit("15/minute")

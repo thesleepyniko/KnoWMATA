@@ -1,20 +1,24 @@
-from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
-from pathlib import Path
-from config import settings
-from datetime import datetime, timedelta, timezone
-import httpx, io, zipfile, json
 import asyncio
-import csv, json
-from sqlalchemy.orm import Session
-from sqlalchemy import func
-from db import create_tables, SessionLocal
+import csv
+import io
+import json
+import zipfile
+from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import httpx
+from config import settings
+from db import SessionLocal, create_tables
+from fastapi import FastAPI, Request
+from haversine import Unit, haversine
 from models import station_info
-from haversine import haversine, Unit
-from starlette.applications import Starlette
 from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
+from sqlalchemy import func
+from sqlalchemy.orm import Session
+from starlette.applications import Starlette
 
 DATA_DIR = Path("data")
 WMATA_DIR = DATA_DIR / "wmata"

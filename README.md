@@ -2,7 +2,7 @@
 
 How well do you know WMATA? Try racing through the city using transit without maps, and see what you get! 
 
-In order to use this app, **please run it yourself**. Nest is not giving my app SSL certs so its not usable other than a preview if you try using GH pages :pf:
+In order to use this app, **please run it yourself**. Nest is not giving my app SSL certs so its not usable other than a preview if i use GH pages :pf:
 
 # Run it yourself
 

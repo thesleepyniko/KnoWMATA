@@ -20,6 +20,7 @@ from slowapi.util import get_remote_address
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from starlette.applications import Starlette
+import uvicorn
 
 DATA_DIR = Path("data")
 WMATA_DIR = DATA_DIR / "wmata"
@@ -133,3 +134,6 @@ def get_random_stop(request: Request, user_lat: float, user_long: float, min_ran
                 return {}
             attempts+=1
     return result #type: ignore
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=36379)

@@ -1,0 +1,6 @@
+httpx
+fastapi
+haversine
+slowapi
+sqlalchemy
+uvicorn

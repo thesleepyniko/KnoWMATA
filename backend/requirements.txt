@@ -4,3 +4,4 @@ haversine
 slowapi
 sqlalchemy
 uvicorn
+dotenv

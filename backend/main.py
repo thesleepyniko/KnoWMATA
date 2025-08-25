@@ -25,10 +25,10 @@ import uvicorn
 DATA_DIR = Path("data")
 WMATA_DIR = DATA_DIR / "wmata"
 origins = [
-    "https://thisiscid.github.io",               # your user site
-    "https://thisiscid.github.io/KnoWMATA",   # repo site
-    "https://thisiscid.github.io/KnowMATA/game.html"
-    "http://localhost:8000"                       # dev testing
+    "https://thesleepyniko.github.io",
+    "https://thesleepyniko.github.io/KnowMATA",               # your user site
+    "https://thesleepyniko.github.io/KnoWMATA",   # repo site
+    "https://thesleepyniko.github.io/KnowMATA/game.html"
 ]
 
 
